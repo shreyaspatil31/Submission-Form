@@ -49,9 +49,7 @@ The application runs on `http://localhost:8084`. You can use Postman or any othe
   {
       "cid": 1,
       "cname": "John Doe",
-      "cmail": "john.doe@example.com",
-      "mobile": 1234567890,
-      "address": "123 Main St"
+      "cmail": "john.doe@example.com"
   }
   ```
 
@@ -75,9 +73,7 @@ The application runs on `http://localhost:8084`. You can use Postman or any othe
   {
       "cid": 1,
       "cname": "John Doe",
-      "cmail": "john.doe@newexample.com",
-      "mobile": 1234567890,
-      "address": "456 Main St"
+      "cmail": "john.doe@newexample.com"
   }
   ```
 
