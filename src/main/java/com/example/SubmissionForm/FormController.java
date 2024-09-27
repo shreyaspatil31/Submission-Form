@@ -5,46 +5,57 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.*;
 
+@RequestMapping("/api")
 @Controller
 public class FormController {
-	@Autowired
-	CustomerRepo repo;
-    
-    @RequestMapping("/customers")
+    @Autowired
+    CustomerRepo repo;
+
+    @GetMapping("/customers")
     @ResponseBody
     public List<Customers> getCustomers(){
-    	return repo.findAll();
+        return repo.findAll();
     }
-    
-    @RequestMapping("/customers/{cid}")
+
+    @GetMapping("/customers/{cid}")
     @ResponseBody
-    public Optional<Customers> getCustomers2(@PathVariable("cid") int cid){
-    	return repo.findById(cid);
+    public Optional<Customers> getCustomerById(@PathVariable("cid") int cid){
+        return repo.findById(cid);
     }
-    
+
     @DeleteMapping("/customers/{cid}")
-    public Optional<Customers> getCustomers3(@PathVariable("cid") int cid){
-    	@SuppressWarnings("deprecation")
-		Customers cust = repo.getOne(cid);
-    	repo.delete(cust);
-    	return Optional.ofNullable(cust);
+    @ResponseBody
+    public String deleteCustomer(@PathVariable("cid") int cid){
+        Optional<Customers> customer = repo.findById(cid);
+        if (customer.isPresent()) {
+            repo.delete(customer.get());
+            return "Customer deleted with id: " + cid;
+        } else {
+            return "Customer not found with id: " + cid;
+        }
     }
-    
-    @PutMapping(path="/customers", consumes= {"application/json"})
-    public Customers getCustomers4(@RequestBody Customers customers){
-    	repo.save(customers);
-    	return customers;
+
+    // POST request to add a new customer
+    @PostMapping(path="/customers", consumes="application/json", produces="application/json")
+    @ResponseBody
+    public Customers addCustomer(@RequestBody Customers customer){
+        return repo.save(customer);
+    }
+
+    // PUT request to update a customer using their ID
+    @PutMapping(path="/customers/{cid}", consumes="application/json", produces="application/json")
+    @ResponseBody
+    public Customers updateCustomer(@PathVariable("cid") int cid, @RequestBody Customers customerDetails){
+        Optional<Customers> customerOptional = repo.findById(cid);
+        if (customerOptional.isPresent()) {
+            Customers existingCustomer = customerOptional.get();
+            existingCustomer.setCname(customerDetails.getCname());
+            existingCustomer.setCmail(customerDetails.getCmail());
+            return repo.save(existingCustomer); // Save updated customer
+        } else {
+            throw new RuntimeException("Customer not found with id: " + cid);
+        }
     }
 }
