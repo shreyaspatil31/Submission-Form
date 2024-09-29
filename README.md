@@ -103,6 +103,8 @@ spring.datasource.username=sa
 spring.datasource.password=
 spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
 ```
+![Screenshot 2024-09-27 232609](https://github.com/user-attachments/assets/fc753934-8fc5-4b05-bd00-b4c314a2209e)
+
 
 ## Contributing
 
